@@ -62,3 +62,28 @@
   /* Add some padding for the scrollbar */
   padding-right: 10px; 
 }
+
+/* Add this to your chatbot.css file */
+
+.message.assistant h1,
+.message.assistant h2,
+.message.assistant h3 {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.message.assistant ul,
+.message.assistant ol {
+  padding-left: 20px;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.message.assistant li {
+  margin-bottom: 0.25em;
+}
+
+.message.assistant a {
+  color: #a78bfa; /* A purple link color */
+  text-decoration: underline;
+}

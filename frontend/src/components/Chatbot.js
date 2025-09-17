@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
 import './Chatbot.css';
 import { v4 as uuidv4 } from 'uuid';
+import ReactMarkdown from 'react-markdown'; // Import ReactMarkdown
 
 // Use the correct prop name
 export default function Chatbot({ onNewTextContent }) {
@@ -60,7 +61,12 @@ export default function Chatbot({ onNewTextContent }) {
       <div className="chat-history">
         {messages.map((msg, index) => (
           <div key={index} className={`message ${msg.role}`}>
-            {msg.content}
+            {/* Use ReactMarkdown for assistant messages */}
+            {msg.role === 'assistant' ? (
+              <ReactMarkdown>{msg.content}</ReactMarkdown>
+            ) : (
+              msg.content
+            )}
           </div>
         ))}
         {loading && <div className="message assistant">Thinking...</div>}
