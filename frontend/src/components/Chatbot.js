@@ -36,7 +36,7 @@ export default function Chatbot({ onNewTextContent }) {
     setLoading(true);
 
     try {
-      const functionUrl = 'https://peataenjmccoxachlihq.supabase.co'; // Paste your URL here
+  const functionUrl = 'https://peataenjmccoxachlihq.supabase.co/functions/v1/ai-counselor';
 
       const response = await fetch(functionUrl, {
         method: 'POST',
