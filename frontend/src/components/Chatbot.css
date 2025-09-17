@@ -11,6 +11,9 @@
   flex-grow: 1; /* Takes up available space */
   overflow-y: auto;
   margin-bottom: 1rem;
+  min-height: 0; /* A flexbox trick to ensure proper shrinking and scrolling */
+  /* Add some padding for the scrollbar */
+  padding-right: 10px; 
 }
 .message {
   padding: 10px 15px;
@@ -48,42 +51,49 @@
   border-radius: 10px;
   cursor: pointer;
 }
-.chatbot-container {
-  display: flex;
-  flex-direction: column;
-  height: 100%; /* Make the container fill its parent grid cell */
+
+
+/* ============================================= */
+/* === NEW STYLES FOR MARKDOWN FORMATTING ====== */
+/* ============================================= */
+
+/* Targets any content inside the assistant's message bubble */
+.message.assistant > * {
+  margin: 0.75em 0; /* Adds consistent vertical spacing between elements */
 }
 
-.chat-history {
-  flex-grow: 1; /* Allow this area to take all available vertical space */
-  overflow-y: auto; /* Show a scrollbar ONLY when content overflows */
-  margin-bottom: 1rem;
-  min-height: 0; /* A flexbox trick to ensure proper shrinking and scrolling */
-  /* Add some padding for the scrollbar */
-  padding-right: 10px; 
-}
-
-/* Add this to your chatbot.css file */
-
+/* Style for Headers (e.g., ### Title) */
 .message.assistant h1,
 .message.assistant h2,
-.message.assistant h3 {
-  margin-top: 0.5em;
+.message.assistant h3,
+.message.assistant h4 {
+  margin-top: 1em;
   margin-bottom: 0.5em;
+  font-weight: 600; /* Makes headers bolder */
 }
 
+/* Remove margin from the very first element in a message */
+.message.assistant > *:first-child {
+  margin-top: 0;
+}
+
+/* Remove margin from the very last element in a message */
+.message.assistant > *:last-child {
+  margin-bottom: 0;
+}
+
+/* Styles for Lists (e.g., - Item 1 or 1. Item 1) */
 .message.assistant ul,
 .message.assistant ol {
-  padding-left: 20px;
-  margin-top: 0.5em;
-  margin-bottom: 0.5em;
+  padding-left: 25px; /* Indents the list */
 }
 
 .message.assistant li {
-  margin-bottom: 0.25em;
+  margin-bottom: 0.5em; /* Adds spacing between list items */
+  padding-left: 5px;
 }
 
-.message.assistant a {
-  color: #a78bfa; /* A purple link color */
-  text-decoration: underline;
+/* Ensures bold text is properly weighted */
+.message.assistant strong {
+  font-weight: bold;
 }
