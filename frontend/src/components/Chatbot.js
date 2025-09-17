@@ -1,23 +1,22 @@
 import { useState, useEffect, useRef } from 'react';
-import { supabase } from '../supabaseClient';
-import './Chatbot.css';
-import { v4 as uuidv4 } from 'uuid';
+import { supabase } from '../supabaseClient'; // Make sure this path is correct
+import './Chatbot.css'; // Make sure this path is correct
 import ReactMarkdown from 'react-markdown';
 
 export default function Chatbot({ onNewTextContent }) {
   const [messages, setMessages] = useState([]);
   const [currentMessage, setCurrentMessage] = useState('');
   const [loading, setLoading] = useState(false);
-  const [sessionId] = useState(uuidv4());
   const chatHistoryRef = useRef(null);
 
+  // Set the initial greeting message
   useEffect(() => {
     setMessages([
       { role: 'assistant', content: 'Hello! How can I help you with your career goals today?' }
     ]);
   }, []);
 
-  // Automatically scroll to the bottom when new messages are added
+  // Automatically scroll to the bottom of the chat when new messages are added
   useEffect(() => {
     if (chatHistoryRef.current) {
       chatHistoryRef.current.scrollTop = chatHistoryRef.current.scrollHeight;
@@ -29,24 +28,28 @@ export default function Chatbot({ onNewTextContent }) {
     if (!currentMessage.trim() || loading) return;
 
     const userMessage = { role: 'user', content: currentMessage };
-    // Add the user message and an empty assistant message to be populated
-    const newMessages = [...messages, userMessage, { role: 'assistant', content: '' }];
-    setMessages(newMessages);
+    // Add the user's message and a new, empty assistant message to be populated by the stream
+    setMessages(prevMessages => [...prevMessages, userMessage, { role: 'assistant', content: '' }]);
     setCurrentMessage('');
     setLoading(true);
 
     try {
-  const functionUrl = 'https://peataenjmccoxachlihq.supabase.co/functions/v1/ai-counselor';
+      // --- IMPORTANT ---
+      // This is the direct URL to your Supabase Function.
+      // This bypasses potential browser errors and is more reliable.
+      const functionUrl = 'https://peataenjmccoxachlihq.supabase.co/functions/v1/ai-counselor'; // Replace with your actual URL if different
 
       const response = await fetch(functionUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          // Pass the user's authentication token to the function
           'Authorization': `Bearer ${supabase.auth.session()?.access_token}`
         },
         body: JSON.stringify({
           query: userMessage.content,
-          history: messages.slice(1).filter(msg => msg.role !== 'assistant' || msg.content !== 'Hello! How can I help you with your career goals today?')
+          // Filter out the initial greeting to prevent history errors
+          history: messages.filter(msg => msg.role !== 'assistant' || msg.content !== 'Hello! How can I help you with your career goals today?')
         }),
       });
 
@@ -54,6 +57,7 @@ export default function Chatbot({ onNewTextContent }) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
+      // Read the response as a stream
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
       let accumulatedContent = '';
@@ -75,20 +79,19 @@ export default function Chatbot({ onNewTextContent }) {
               const delta = data.choices[0]?.delta?.content || '';
               accumulatedContent += delta;
 
-              // Update the last message (the empty assistant one) with the new content
+              // Update the very last message in the array with the new content
               setMessages(prevMessages => {
                 const updatedMessages = [...prevMessages];
                 updatedMessages[updatedMessages.length - 1].content = accumulatedContent;
                 return updatedMessages;
               });
-
             } catch (error) {
               // Ignore lines that are not valid JSON
             }
           }
         }
       }
-      // Call the prop after the full stream is complete
+
       if (onNewTextContent) {
           onNewTextContent(userMessage.content + " " + accumulatedContent);
       }

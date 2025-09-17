@@ -1,14 +1,14 @@
 import { serve } from 'https://deno.land/std@0.177.0/http/server.ts'
-import { corsHeaders } from '../_shared/cors.ts'
+import { corsHeaders } from '../_shared/cors.ts' // Ensure this file exists
 import { OpenAI } from 'https://esm.sh/openai@4.11.1'
 
-// Initialize the OpenAI client with your secret key
+// Initialize the OpenAI client using the secret key from your Supabase dashboard
 const openai = new OpenAI({
   apiKey: Deno.env.get('OPENAI_API_KEY'),
 })
 
 serve(async (req) => {
-  // This is needed if you're deploying functions locally
+  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
@@ -16,27 +16,26 @@ serve(async (req) => {
   try {
     const { query, history } = await req.json()
 
-    // Create the chat completion request to OpenAI, with stream: true
+    // Request a stream from the OpenAI API
     const stream = await openai.chat.completions.create({
       model: 'gpt-3.5-turbo',
       messages: [
         { role: 'system', content: 'You are a helpful career counselor.' },
-        ...history, // Your frontend is already filtering this correctly
+        ...history, // Pass the conversation history for context
         { role: 'user', content: query },
       ],
-      stream: true, // This is the crucial part that requests a stream
+      stream: true, // This is the most important setting
     })
 
-    // Return a new Response object with the stream from OpenAI
-    // This pipes the data directly from OpenAI to your frontend
+    // Immediately return the stream from OpenAI directly to the frontend
     return new Response(stream, {
       headers: {
         ...corsHeaders,
-        'Content-Type': 'text/event-stream',
+        'Content-Type': 'text/event-stream', // Required header for streaming
       },
     })
   } catch (error) {
-    console.error(error)
+    console.error('Error in Supabase function:', error)
     return new Response(JSON.stringify({ error: error.message }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 500,
