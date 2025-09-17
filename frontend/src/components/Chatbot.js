@@ -46,7 +46,7 @@ export default function Chatbot({ onNewTextContent }) {
         },
         body: JSON.stringify({
           query: userMessage.content,
-          history: messages.slice(1) // Send previous messages for context
+          history: messages.slice(1).filter(msg => msg.role !== 'assistant' || msg.content !== 'Hello! How can I help you with your career goals today?')
         }),
       });
 
