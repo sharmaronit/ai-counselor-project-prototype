@@ -36,7 +36,7 @@ export default function Chatbot({ onNewTextContent }) {
     setLoading(true);
 
     try {
-      const { data: { functionUrl } } = await supabase.functions.get('ai-counselor');
+      const functionUrl = 'https://peataenjmccoxachlihq.supabase.co'; // Paste your URL here
 
       const response = await fetch(functionUrl, {
         method: 'POST',
