@@ -1,0 +1,77 @@
+/* --- THIS IS THE FIX --- */
+/* This container will take up the full screen and center its content */
+.auth-container {
+  min-height: 100vh; /* Make it at least as tall as the viewport */
+  width: 95%;
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center;    /* Center vertically */
+  padding: 2rem;
+  box-sizing: border-box;
+}
+/* ------------------------ */
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  height: auto;
+}
+
+.auth-form-widget {
+  
+  /* No styles needed here, padding is handled by the parent */
+}
+
+.auth-header {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+  text-align: center;
+  color: var(--text-color);
+}
+
+.auth-description {
+  margin-bottom: 2 rem;
+  color: var(--text-color-secondary);
+  text-align: center;
+}
+
+.auth-inputField {
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background-color: rgba(0, 0, 0, 0.2);
+  color: var(--text-color);
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.auth-button-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 1rem;
+}
+
+.auth-button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 100%;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: background-color 0.2s;
+}
+
+.auth-button:hover:not(:disabled) {
+  background-color: #7a25c7;
+}
+
+.auth-button:disabled {
+  background-color: #555;
+  cursor: not-allowed;
+}

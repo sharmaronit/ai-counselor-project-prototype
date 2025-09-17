@@ -1,0 +1,185 @@
+/* Main layout container doesn't need much styling */
+.app-layout {
+  width: 100%;
+}
+
+/* --- THE FIX: Styles for the full-width top navbar --- */
+.top-navbar {
+  position: fixed;
+  
+  /* Change 1: Pin to the top-left corner */
+  top: 0;
+  left: 0;
+  
+  /* Change 2: Remove the centering transform */
+  /* transform: translateX(-50%); */
+  
+  /* Change 3: Make it span the full width */
+  width: 100%;
+  box-sizing: border-box; /* Ensures padding is included in the width */
+  
+  /* Change 4: Remove the pill shape */
+  border-radius: 0; 
+  
+  /* We can keep the rest of the glass effect */
+  background: rgba(36, 36, 36, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-color); /* Use border-bottom instead of a full border */
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+
+/* Flex container for the items inside the navbar */
+.nav-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  
+  /* NEW: Add horizontal padding to keep content away from the edges */
+  padding: 0.75rem 2rem;
+  max-width: 1400px; /* Optional: Constrain the content width on very large screens */
+  margin: 0 auto; /* Center the content within the full-width bar */
+}
+
+/* Left side: Brand/Logo */
+.nav-left .nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: var(--text-color);
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.nav-logo {
+  height: 32px;
+  width: 32px;
+  border-radius: 50%;
+}
+
+/* Center: Navigation Links */
+.nav-center .nav-links {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 0.5rem;
+}
+
+.nav-links a {
+  padding: 10px 20px;
+  text-decoration: none;
+  color: var(--text-color-secondary);
+  font-weight: 500;
+  border-radius: 8px; /* A subtle radius looks better on full-width bars */
+  transition: all 0.2s ease-in-out;
+}
+
+.nav-links a:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--text-color);
+}
+
+.nav-links a.active {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: white;
+}
+
+/* Right side: User and Sign Out */
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.nav-user {
+  color: var(--text-color-secondary);
+  font-size: 0.9em;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.signout-button-pill {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: opacity 0.2s;
+}
+
+.signout-button-pill:hover {
+  opacity: 0.8;
+}
+
+/* The Main Content Area */
+.content-area {
+  width: 100%;
+  /* Adjust padding to account for the new, shorter navbar height */
+  padding-top: 100px; 
+  box-sizing: border-box; 
+}
+/* --- MOBILE RESPONSIVENESS (REVISED) --- */
+@media (max-width: 768px) {
+  /* Make the navbar smaller and closer to the top */
+  .top-navbar {
+    top: 10px;
+    padding: 6px;
+    /* NEW: Allow the navbar to be almost the full width on small screens */
+    width: 95%; 
+  }
+
+  /* Reduce the padding and gaps to save space */
+  .nav-content {
+    gap: 0.5rem;
+    padding: 0 0.5rem;
+  }
+
+  /* Hide the brand text, but keep the logo */
+  .nav-brand span {
+    display: none;
+  }
+
+  .nav-left .nav-brand {
+    padding: 4px;
+  }
+  
+  /* --- THIS IS THE CRITICAL FIX --- */
+  .nav-center {
+    /* This allows the center navigation block to shrink as needed */
+    min-width: 0;
+  }
+
+  /* Make the navigation links smaller and wrap if necessary */
+  .nav-links {
+    flex-wrap: wrap; /* Allows links to wrap to a new line if needed */
+    justify-content: center;
+  }
+  .nav-links a {
+    padding: 6px 10px; /* Further reduce padding */
+    font-size: 0.8em; /* Further reduce font size */
+  }
+  
+  /* Hide the user's email, but keep the Sign Out button */
+  .nav-user {
+    display: none;
+  }
+
+  /* Make the signout button slightly smaller */
+  .signout-button-pill {
+    padding: 8px 16px;
+    font-size: 0.9em;
+  }
+
+  /* Make the main content's top padding match the smaller navbar */
+  .content-area {
+    padding-top: 90px;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}

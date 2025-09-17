@@ -1,0 +1,109 @@
+.skills-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.chart-area {
+  flex-grow: 1;
+  position: relative;
+  min-height: 150px;
+}
+
+.add-skill-form {
+  display: flex;
+  gap: 1.5rem; /* Increased gap for better spacing */
+  margin-top: 1.5rem;
+  align-items: center;
+}
+
+.skill-input {
+  flex-basis: 40%; /* Give the text input a specific width */
+  border: 1px solid var(--border-color);
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: var(--text-color);
+}
+
+/* --- NEW SLIDER STYLES --- */
+
+.slider-container {
+  flex-grow: 1; /* Allow the slider to take up the remaining space */
+}
+
+/* The slider itself */
+.skill-slider {
+  -webkit-appearance: none; /* Remove default WebKit styles */
+  appearance: none;
+  width: 100%;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.3); /* The color of the track */
+  border-radius: 5px;
+  outline: none;
+  cursor: pointer;
+}
+
+/* The draggable handle (thumb) for WebKit browsers (Chrome, Safari) */
+.skill-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: var(--primary-color); /* Our theme's purple color */
+  border-radius: 50%;
+  border: 2px solid white;
+  margin-top: -6px; /* Vertically center the thumb on the track */
+}
+
+/* The draggable handle (thumb) for Firefox */
+.skill-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: var(--primary-color);
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+/* The progress bar for Firefox */
+.skill-slider::-moz-range-progress {
+  background-color: var(--primary-color);
+  height: 8px;
+  border-radius: 5px;
+}
+
+/* The number scale below the slider */
+.slider-scale {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 2px 0 2px;
+  font-size: 0.75rem;
+  color: var(--text-color-secondary);
+}
+
+/* --- END OF NEW SLIDER STYLES --- */
+
+.add-skill-button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* --- MOBILE RESPONSIVENESS --- */
+@media (max-width: 768px) {
+  /* Stack the form elements vertically */
+  .add-skill-form {
+    flex-direction: column;
+    align-items: stretch; /* Make all items the same width */
+    gap: 1rem;
+  }
+
+  /* Ensure the text input doesn't have a fixed basis */
+  .skill-input {
+    flex-basis: auto;
+  }
+}
