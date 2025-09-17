@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
 import './Chatbot.css';
 import { v4 as uuidv4 } from 'uuid';
-import ReactMarkdown from 'react-markdown'; // Import ReactMarkdown
 
 // Use the correct prop name
 export default function Chatbot({ onNewTextContent }) {
@@ -16,6 +15,8 @@ export default function Chatbot({ onNewTextContent }) {
       { role: 'assistant', content: 'Hello! How can I help you with your career goals today?' }
     ]);
   }, []);
+
+ // ... (keep all the code above the handleSubmit function the same)
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -38,11 +39,22 @@ export default function Chatbot({ onNewTextContent }) {
       });
 
       if (error) throw error;
+      
+      // =================================================================
+      // === THE FIX: Add these lines to unescape the AI's response =====
+      // =================================================================
+      let formattedContent = data.reply;
+      // Remove backslashes that escape asterisks (for bold/italics)
+      formattedContent = formattedContent.replace(/\\\*/g, "*");
+      // Remove backslashes that escape hashes (for headers)
+      formattedContent = formattedContent.replace(/\\#/g, "#");
+      // Remove backslashes that escape hyphens (for lists)
+      formattedContent = formattedContent.replace(/\\-/g, "-");
+      // =================================================================
 
-      const assistantMessage = { role: 'assistant', content: data.reply };
+      const assistantMessage = { role: 'assistant', content: formattedContent }; // Use the cleaned content
       setMessages([...newMessages, assistantMessage]);
 
-      // THE FIX: Call the prop with the combined text
       if (onNewTextContent) {
         onNewTextContent(userMessage.content + " " + assistantMessage.content);
       }
@@ -55,18 +67,15 @@ export default function Chatbot({ onNewTextContent }) {
     }
   };
 
+// ... (keep all the code below the handleSubmit function the same)
+
   return (
     <div className="chatbot-container">
       <h3 className="widget-title">AI Counsellor</h3>
       <div className="chat-history">
         {messages.map((msg, index) => (
           <div key={index} className={`message ${msg.role}`}>
-            {/* Use ReactMarkdown for assistant messages */}
-            {msg.role === 'assistant' ? (
-              <ReactMarkdown>{msg.content}</ReactMarkdown>
-            ) : (
-              msg.content
-            )}
+            {msg.content}
           </div>
         ))}
         {loading && <div className="message assistant">Thinking...</div>}
