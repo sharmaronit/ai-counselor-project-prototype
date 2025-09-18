@@ -1,0 +1,62 @@
+/* Glass Card Container */
+.glass-card {
+  --bg-color-light: rgba(255, 255, 255, 0.25);
+  --highlight-light: rgba(255, 255, 255, 0.75);
+  --bg-color-dark: rgba(25, 25, 35, 0.25); /* A slightly purplish dark tint */
+  --highlight-dark: rgba(255, 255, 255, 0.15);
+  
+  position: relative;
+  /* MODIFICATION: Remove fixed width and height to be flexible */
+  width: 100%;
+  height: 100%;
+  border-radius: 16px; /* Match our existing style */
+  overflow: hidden;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
+}
+
+.glass-overlay,
+.glass-specular {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.glass-overlay {
+  z-index: 2;
+  background: var(--bg-color-dark); /* Default to dark mode style */
+}
+
+.glass-specular {
+  z-index: 3;
+  box-shadow: inset 1px 1px 1px var(--highlight-dark); /* Default to dark mode style */
+}
+
+/* MODIFICATION: The content area now needs to be flexible and scrollable */
+.glass-content {
+  position: relative;
+  z-index: 4;
+  padding: 24px; /* Match our existing padding */
+  color: var(--text-color);
+  height: 100%;
+  box-sizing: border-box; /* Important for padding and height to work together */
+  
+  /* Make the content inside scrollable */
+  display: flex;
+  flex-direction: column;
+}
+
+/* This targets the actual components we pass in (like Chatbot) and makes them scroll */
+.glass-content > div {
+  flex-grow: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+
+/* Dark mode styles (already the default, but good to have) */
+@media (prefers-color-scheme: dark) {
+  .glass-card {
+    --bg-color: var(--bg-color-dark);
+    --highlight: var(--highlight-dark);
+  }
+}

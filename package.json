@@ -3,6 +3,7 @@
     "supabase": "^2.40.7"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.57.4"
+    "@supabase/supabase-js": "^2.57.4",
+    "react-markdown": "^10.1.0"
   }
 }
