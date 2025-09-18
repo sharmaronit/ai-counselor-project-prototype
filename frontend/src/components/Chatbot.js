@@ -8,15 +8,11 @@
     setLoading(true);
 
     try {
-      // The direct URL to your Supabase Function
       const functionUrl = 'https://peataenjmccoxachlihq.supabase.co/functions/v1/ai-counselor';
 
       const response = await fetch(functionUrl, {
         method: 'POST',
         headers: {
-          // --- THIS IS THE FIX ---
-          // We only need to tell the server we are sending JSON.
-          // The OpenRouter function does not need the Supabase Auth header.
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -25,27 +21,32 @@
         }),
       });
 
-      if (!response.ok) {
-        // This will now give us a more specific error if the server fails
+      if (!response.ok || !response.body) {
         const errorData = await response.json();
         throw new Error(`HTTP error! status: ${response.status}, message: ${errorData.error}`);
       }
 
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
+      // --- NEW, MORE ROBUST STREAM HANDLING ---
       let accumulatedContent = '';
+      // The TextDecoder needs to be outside the loop
+      const decoder = new TextDecoder();
+      const reader = response.body.getReader();
 
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        const chunk = decoder.decode(value);
-        const lines = chunk.split('\n');
-
+      // Use a for-await-of loop which is cleaner and more modern
+      for await (const chunk of (async function*() {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) return;
+          yield value;
+        }
+      })()) {
+        const decodedChunk = decoder.decode(chunk, { stream: true });
+        const lines = decodedChunk.split('\n');
+        
         for (const line of lines) {
           if (line.startsWith('data: ')) {
             const dataStr = line.substring(6);
-            if (dataStr.trim() === '[DONE]') break;
+            if (dataStr.trim() === '[DONE]') continue;
             
             try {
               const data = JSON.parse(dataStr);
@@ -58,18 +59,19 @@
                 return updatedMessages;
               });
             } catch (error) {
-              // Ignore malformed JSON
+              // Ignore malformed JSON from partial chunks
             }
           }
         }
       }
+      // --- END OF NEW STREAM HANDLING ---
 
       if (onNewTextContent) {
           onNewTextContent(userMessage.content + " " + accumulatedContent);
       }
 
     } catch (error) {
-      console.error("Error in handleSubmit:", error); // More detailed console error
+      console.error("Error in handleSubmit:", error);
       const errorMessage = "Sorry, I'm having trouble connecting. Please try again.";
       setMessages(prevMessages => {
           const updatedMessages = [...prevMessages];
