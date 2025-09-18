@@ -33,8 +33,14 @@ export default function Chatbot({ onNewTextContent }) {
     try {
       const functionUrl = 'https://peataenjmccoxachlihq.supabase.co/functions/v1/ai-counselor';
       
-      // Get the current user's session for the auth token
-      const session = supabase.auth.session();
+      // --- THIS IS THE FINAL FIX ---
+      // Use the modern, asynchronous getSession() method to reliably get the auth token.
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+
+      if (sessionError) {
+        throw new Error(`Authentication error: ${sessionError.message}`);
+      }
+
       if (!session) {
         throw new Error("User is not authenticated. Cannot call function.");
       }
@@ -43,8 +49,6 @@ export default function Chatbot({ onNewTextContent }) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          // --- THIS IS THE CRITICAL FIX ---
-          // The Supabase Function gateway requires this Authorization header.
           'Authorization': `Bearer ${session.access_token}`
         },
         body: JSON.stringify({
@@ -99,7 +103,7 @@ export default function Chatbot({ onNewTextContent }) {
       }
 
     } catch (error) {
-      console.error("Error in handleSubmit:", error); // The browser console will show the REAL error here
+      console.error("Error in handleSubmit:", error);
       const errorMessage = "Sorry, I'm having trouble connecting. Please try again.";
       setMessages(prevMessages => {
           const updatedMessages = [...prevMessages];
