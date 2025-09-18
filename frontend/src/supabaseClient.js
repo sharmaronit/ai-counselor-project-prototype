@@ -1,13 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 
-// These lines read the variables from your .env file
-const supabaseUrl = process.env.REACT_APP_SUPABASE_URL
-const supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY
+const supabaseUrl = 'https://peataenjmccoxachlihq.supabase.co' // Your local API URL
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBlYXRhZW5qbWNjb3hhY2hsaWhxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc5Njk0MDcsImV4cCI6MjA3MzU0NTQwN30.a_Dqios2-nU1cK0c3k5MMc-AL-ygeyal7kjVV7bs2yc' // Paste the key from your terminal here
 
-// This check ensures your .env file is set up correctly
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error("Supabase URL and Anon Key must be defined in your .env file.");
-}
-
-// This creates and exports the Supabase client that your whole app will use
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
